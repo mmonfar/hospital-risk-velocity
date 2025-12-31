@@ -1,0 +1,18 @@
+# Virtual Environment
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit/OS local files
+.streamlit/
+.DS_Store
+Thumbs.db
+
+# Large Data (Optional)
+# If your CSV gets too big, uncomment the next line
+# hospital_risk_data.csv
