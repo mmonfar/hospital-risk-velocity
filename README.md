@@ -1,54 +1,39 @@
-# Hospital Risk Velocity Engine 🏥 📈
+# 🏥 Hospital Risk Intelligence Portal (V2)
+### *Kinetic Surveillance & Predictive Harm Intelligence*
 
-An executive-level surveillance dashboard that applies **kinematic principles (Velocity & Acceleration)** to hospital incident data. Instead of just tracking incident volume, this engine identifies "Risk Surges" by calculating the momentum of harm.
+An executive-level surveillance engine that applies **kinematic principles (Velocity & Acceleration)** to hospital incident data. Instead of tracking static incident counts, this system identifies "Risk Surges" by calculating the momentum and pressure of harm before sentinel events occur.
 
-## 🚀 The Core Theory: Harm Kinematics
-Standard hospital reporting is **reactive**, focusing on static counts. This engine applies **Classical Mechanics** to patient safety data:
+## 🚀 The Strategic Theory: Harm Kinematics
+Standard hospital reporting is **reactive**. This engine bridges the gap between the ICU and the Boardroom by applying **Classical Mechanics** to patient safety data:
 
-1.  **Quantization (Position):** We map categorical Harm Levels (A-I) to a numerical **Risk Priority Number (RPN)**. 
-    * *Scale:* A=1 (Near Miss) ... I=9 (Death).
-2.  **Risk Velocity ($v$):** The first derivative of risk. It measures the speed at which harm is accumulating over a sliding window ($w$).
-3.  **Risk Acceleration ($a$):** The second derivative. This is our **Early Warning Signal**. It detects if risk is *compounding* (increasing at an increasing rate), predicting a systemic breakdown before it occurs.
+1. **Quantization (Position):** Categorical Harm Levels (A-I) are encoded into a continuous **Risk Priority Number (RPN)**.
+2. **Risk Velocity ($v$):** The first derivative of risk. It measures the rate at which harm accumulates over a sliding window ($w$).
+3. **Risk Acceleration ($a$):** The second derivative. This is the **Early Warning Signal**. It detects if risk is *compounding*, predicting systemic breakdown.
+
+## 📊 Methodology & Risk Appetite
+
+### 1. Statistical Tolerance (The Sigma Filter)
+The engine utilizes a **Risk Appetite Selector** allowing executives to define their tolerance for variance:
+* **Zero Tolerance ($1\sigma$):** Alerts on top 32% of deviations.
+* **Standard Oversight ($2\sigma$):** Alerts on top 5% (Statistical Outliers).
+* **Critical Focus ($3\sigma$):** Alerts only on the top 0.3% of extreme events.
 
 
 
-## 📊 Data Engineering & Methodology
-
-### 1. The NCC MERP Mapping
-We use a linear quantization scale to transform the **NCC MERP Index** (National Coordinating Council for Medication Error Reporting and Prevention) into a computable metric:
-| Harm Level | Description | RPN Score |
-| :--- | :--- | :--- |
-| **A - D** | No Harm / Near Miss | 1 - 4 |
-| **E - H** | Permanent / Temporary Harm | 5 - 8 |
-| **I** | Death | 9 |
-
-### 2. The "Risk Position" (Aggregation)
-To determine the "Position" of a unit in the risk field at any time ($t$), we calculate the **Total Risk Magnitude**:
-$$RPN_{total} = \sum (Harm\_Scores)$$
-**Why Sum?** By using the sum (which is effectively Average Severity $\times$ Incident Count), we ensure that the engine is sensitive to both **Volume** (many small incidents) and **Gravity** (one major event). Unlike a Median or Mean, the Sum ensures that high-severity "Black Swan" events are never mathematically suppressed.
-
-### 3. The Kinetic Algorithm
+### 2. The Kinetic Algorithm
 Using a discrete time-step ($\Delta t$) defined by the user-selected window ($w$):
-
 * **Velocity ($v$):** $$v = \frac{RPN_t - RPN_{t-w}}{w}$$
 * **Acceleration ($a$):** $$a = \frac{v_t - v_{t-w}}{w}$$
 
+## 📂 System Architecture (Modular)
+To ensure scalability and clinical reliability, the portal is architected into discrete functional modules:
 
+* `app.py`: **The Orchestrator.** Manages the Streamlit UI and executive dashboard state.
+* `risk_engine.py`: **The Mathematical Brain.** Contains the proprietary logic for RPN quantization, velocity derivatives, and Z-score thresholding.
+* `ui_styles.py`: **The Design System.** Defines the Apple-matte UI/CSS and clinical nomenclature (NCC MERP mapping).
+* `hospital_risk_data.csv`: The clinical dataset.
 
-## 🛠️ Features
-- **Dynamic Sensitivity:** Toggle between Tactical (3-day), Operational (7-day), and Strategic (15-day) views.
-- **Automated Hotspot Detection:** The app automatically identifies the specific unit with the highest risk momentum (Acceleration).
-- **Apple-Matte UI:** A clean, executive-friendly interface built with Streamlit.
-- **Strategic Action Plan:** Automatically generates intervention recommendations based on data trends.
-
-## 📦 Installation & Usage
-1. **Clone the repository.**
-2. **Install dependencies:** `pip install -r requirements.txt`
-3. **Generate the static brief:** `python risk_velocity_engine.py`
-4. **Launch the dashboard:** `streamlit run app.py`
-
-## 📂 Project Structure
-* `app.py`: The Streamlit dashboard and UI logic.
-* `risk_velocity_engine.py`: The backend calculation and PNG report generator.
-* `mock_dataset.py`: Script to generate 500+ rows of synthetic clinical data.
-* `hospital_risk_data.csv`: The quantized dataset for analysis.
+## 🛠️ Deployment
+1. **Activate Environment:** `.\venv\Scripts\Activate.ps1`
+2. **Install Dependencies:** `pip install -r requirements.txt`
+3. **Launch Portal:** `streamlit run app.py`
