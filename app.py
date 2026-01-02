@@ -157,5 +157,5 @@ st.markdown("### Weekly Intensity Matrix")
 pivot = df_f.groupby(['Date', 'Unit'])['weighted_score'].sum().unstack().fillna(0)
 heat_data = pivot.resample('W').sum().T
 fig_h = px.imshow(heat_data, color_continuous_scale="YlOrRd")
-fig_h.update_layout(height=300, yaxis_title="", coloraxis_showscale=False, margin=dict(t=10, b=10))
+fig_h.update_layout(height=300, xaxis_title = "", yaxis_title="", coloraxis_showscale=False, margin=dict(t=10, b=10))
 st.plotly_chart(fig_h, use_container_width=True, config={'displayModeBar': False})
