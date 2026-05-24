@@ -13,6 +13,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Archive
+archive/
+
 # Large Data (Optional)
 # If your CSV gets too big, uncomment the next line
 # hospital_risk_data.csv
