@@ -163,5 +163,6 @@ st.plotly_chart(fig_h, use_container_width=True, config={'displayModeBar': False
 st.caption(
     "Research and demonstration software. Not a medical device and not intended for "
     "clinical decision-making, diagnosis or treatment. Provided \"as is\", without warranty "
-    "of any kind; the author accepts no liability for any use. Uses synthetic data only."
+    "of any kind; the author accepts no liability for any use. Uses synthetic data only. "
+    "Personal project · not affiliated with any employer · synthetic data only."
 )
