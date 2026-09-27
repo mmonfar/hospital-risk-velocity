@@ -159,3 +159,9 @@ heat_data = pivot.resample('W').sum().T
 fig_h = px.imshow(heat_data, color_continuous_scale="YlOrRd")
 fig_h.update_layout(height=300, xaxis_title = "", yaxis_title="", coloraxis_showscale=False, margin=dict(t=10, b=10))
 st.plotly_chart(fig_h, use_container_width=True, config={'displayModeBar': False})
+
+st.caption(
+    "Research and demonstration software. Not a medical device and not intended for "
+    "clinical decision-making, diagnosis or treatment. Provided \"as is\", without warranty "
+    "of any kind; the author accepts no liability for any use. Uses synthetic data only."
+)
