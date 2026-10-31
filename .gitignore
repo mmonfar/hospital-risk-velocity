@@ -22,3 +22,7 @@ Thumbs.db
 
 # Local marketing drafts are not tracked.
 marketing/
+
+# Local brand-sync files (not used at runtime)
+.brand-version
+assets/brand/

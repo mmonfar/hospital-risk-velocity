@@ -60,8 +60,10 @@ def nav_units_title_html() -> str:
 
 def header_html(scope: str) -> str:
     return (
-        '<div class="rw rw-head"><div class="rw-eyebrow">Clinical risk · Risk velocity</div>'
-        f'<h1 class="rw-h1">{escape(scope)}</h1></div>'
+        '<div class="rw rw-head"><div class="rw-m rw-mobrand">mmonfar<i>.</i></div>'
+        '<div class="rw-eyebrow">Clinical risk · Risk velocity</div>'
+        f'<h1 class="rw-h1">{escape(scope)}</h1>'
+        '<div class="rw-quiet">Synthetic data. Not a medical device.</div></div>'
     )
 
 
@@ -245,8 +247,8 @@ def hero_action_html(
     t = tone(view.colour)
     chip = {"r": "ALERT", "w": "WATCH", "t": "STABLE"}.get(t, "NO DATA")
     head = presentation.headline(status, sigma, scope)
-    desktop = trend_svg(daily, ucl, z, sigma, scope, w=760, h=300, fs=12, pad=(42, 18, 16, 30))
-    phone = trend_svg(daily, ucl, z, sigma, scope, w=340, h=230, fs=11, pad=(32, 10, 12, 28))
+    desktop = trend_svg(daily, ucl, z, sigma, scope, w=760, h=300, fs=14, pad=(42, 18, 16, 30))
+    phone = trend_svg(daily, ucl, z, sigma, scope, w=340, h=230, fs=14, pad=(32, 10, 12, 28))
     driver = (
         f"Primary driver: <b>{escape(hot_category)}</b> in <b>{escape(hot_unit)}</b>."
         if hot_unit != "N/A"
