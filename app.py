@@ -1,168 +1,176 @@
-import streamlit as st
+"""Risk early warning dashboard (design v2): risk velocity and tolerance over incident reports.
+
+Run from the repository root so ``.streamlit/config.toml`` is picked up::
+
+    streamlit run app.py
+
+All risk arithmetic (harm weights,
+kinetics, control limit, z-score, tolerance) comes from ``risk_kinematics``; this file
+only filters and wires. Layout lives in ``view.py`` and ``static/style.css``. Data is
+synthetic (``sample_data``).
+"""
+
+from typing import cast
+
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+import streamlit as st
+from risk_kinematics import calculate_risk_kinetics, classify
 
-# 1. IMPORT YOUR CUSTOM MODULES
-from risk_engine import calculate_risk_kinetics, get_strategic_status
-from ui_styles import apply_executive_css, HARM_LABELS
+from clinical_risk_dashboard import presentation, view
+from clinical_risk_dashboard.sample_data import generate_incidents
 
-# --- 2. CONFIGURATION & STYLING ---
-st.set_page_config(page_title="Risk Intelligence Portal", layout="wide")
-apply_executive_css()
+st.set_page_config(page_title="Risk early warning", page_icon="◼", layout="wide")
+# One stylesheet for the whole page, Local font inside.
+st.html(f"<style>{view.stylesheet()}</style>")
 
-# --- 3. DATA PERSISTENCE ---
+
+def show(html: str) -> None:
+    """Page parts go through st.markdown: st.html strips the inline SVG of the trend chart."""
+    st.markdown(html, unsafe_allow_html=True)
+
+
 @st.cache_data
 def load_data():
-    # hospital_risk_data.csv must be in the same directory
-    df = pd.read_csv('hospital_risk_data.csv', parse_dates=['Date'])
-    # Quantizing categorical data as described in your Strategic Hybrid profile
-    harm_weights = {chr(65+i): (i+1)**2 for i in range(9)}
-    df['weighted_score'] = df['Harm_Level'].map(harm_weights)
-    df['raw_level'] = df['Harm_Level'].map({chr(65+i): i+1 for i in range(9)})
-    return df
+    return generate_incidents()
+
 
 df = load_data()
 
-# --- 4. SIDEBAR (Executive Controls) ---
-with st.sidebar:
-    st.markdown("### 🎛️ Surveillance Engine")
-    scope = st.radio("Analysis Scope", ["Whole Hospital", "Single Unit"])
-    selected_unit = st.selectbox("Unit Select", sorted(df["Unit"].unique())) if scope == "Single Unit" else None
-    
-    # Date Range Selection
-    min_date = df['Date'].min().to_pydatetime()
-    max_date = df['Date'].max().to_pydatetime()
-    selected_dates = st.date_input("Analysis Period", value=(min_date, max_date), min_value=min_date, max_value=max_date)
-    
-    # Kinetic Parameters
-    window = st.select_slider("Kinetic Window (Smoothing)", options=[3, 7, 15], value=7)
-    
-    st.markdown("---")
-    # Risk Appetite Mapping
-    sigma_map = {
-        "Zero Tolerance (1σ)": 1,
-        "Standard (2σ)": 2,
-        "Critical Only (3σ)": 3
-    }
-    selected_sigma_label = st.select_slider(
-        "Risk Tolerance Mode",
-        options=list(sigma_map.keys()),
-        value="Standard (2σ)",
-        help="Adjusts alert sensitivity based on statistical confidence intervals."
-    )
-    sigma_val = sigma_map[selected_sigma_label]
+WHOLE = "Whole hospital"
+SIGMA_OPTIONS = {"1σ  Zero tolerance": 1, "2σ  Standard": 2, "3σ  Critical only": 3}
+WINDOWS = {"3 days": 3, "7 days": 7, "15 days": 15}
+span_days = int((df["Date"].max() - df["Date"].min()).days) + 1
+PERIODS = {f"{d} days": d for d in (30, 60, span_days) if d <= span_days}
+units = sorted(df["Unit"].unique())
+scopes = [WHOLE, *units]
 
-# --- 5. DATA FILTERING ---
-if len(selected_dates) == 2:
-    start_date, end_date = selected_dates
-    df_f = df[(df['Date'].dt.date >= start_date) & (df['Date'].dt.date <= end_date)].copy()
-else:
-    df_f = df.copy()
 
-if scope == "Single Unit":
-    df_f = df_f[df_f["Unit"] == selected_unit]
+def _scope_of(df_part: pd.DataFrame, scope: str, window: int, sigma: int):
+    part = df_part if scope == WHOLE else cast(pd.DataFrame, df_part[df_part["Unit"] == scope])
+    k = calculate_risk_kinetics(part, window, sigma)
+    return classify(k.daily, k.mean, k.std, sigma)
 
-# --- 6. CORE ANALYTICS (Module Calls) ---
-# Calling the calculation logic from risk_engine.py
-daily, mean_val, std_val, ucl_value = calculate_risk_kinetics(df_f, window, sigma_val)
 
-# Calling the executive directive logic from risk_engine.py
-z_score, status, color, action_prompt, conf_pct = get_strategic_status(daily, mean_val, std_val, sigma_val)
+# The unit is chosen in the left nav or in the header: two widgets, kept in step.
+if "scope_nav" not in st.session_state:
+    # Open on the unit with the highest sigma now (default window and tolerance): the one
+    # that needs attention first. The nav shows every unit's sigma, and "Whole hospital" is
+    # one click away.
+    _z = {u: _scope_of(df, u, 7, 2).z_score for u in units}
+    _first = max(_z, key=lambda u: _z[u])
+    st.session_state["scope_nav"] = st.session_state["scope_hdr"] = _first
 
-# Identify the primary driver (Hotspot)
-if not df_f.empty:
-    hotspot = df_f.groupby(["Unit", "Category"])["weighted_score"].sum().idxmax()
-else:
-    hotspot = ("N/A", "N/A")
 
-# --- 7. HEADER & STRATEGIC BRIEF ---
-st.markdown(f"""
-<div class="dashboard-header">
-    <h1 style="margin:0; font-size: 2.2rem;">{scope if scope == 'Whole Hospital' else selected_unit} Risk Intelligence</h1>
-    <div style="display: flex; gap: 20px; margin-top: 15px; font-size: 0.85rem; color: #86868B;">
-        <span>🛡️ <b>Tolerance Mode:</b> {selected_sigma_label}</span>
-        <span>📈 <b>Alert Trigger:</b> Outliers beyond {conf_pct} probability</span>
-    </div>
-    <div class="exec-brief" style="border-left-color: {color};">
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: {color}; font-weight: 700; letter-spacing: 0.5px;">Strategic Directive</div>
-        <div style="font-size: 1.25rem; font-weight: 600; margin-top: 5px; color: #1D1D1F;">{action_prompt}</div>
-        <div style="margin-top: 10px; font-size: 0.95rem; color: #424245;">
-            Surveillance status: <b>{status}</b>. Primary driver: <b>{hotspot[1]}</b> in <b>{hotspot[0]}</b>.
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+def _from_nav() -> None:
+    st.session_state["scope_hdr"] = st.session_state["scope_nav"]
 
-# --- 8. EXECUTIVE KPI CARDS ---
-k1, k2, k3 = st.columns(3)
-with k1:
-    st.markdown(f"""<div class="metric-box"><div class="m-label">Surveillance Status</div><div class="m-value" style="color:{color}; font-size:1.8rem;">{status}</div>
-    <div class="m-context">Variance vs Base: <b>{z_score:.2f} σ</b></div></div>""", unsafe_allow_html=True)
 
-with k2:
-    if not daily.dropna().empty:
-        accel_val = daily.dropna().iloc[-1]['acceleration']
-        accel_label = "Increasing" if accel_val > 0.01 else ("Decreasing" if accel_val < -0.01 else "Flat")
-        accel_action = "Risk momentum is rising" if accel_val > 0.01 else "Risk momentum is cooling"
-    else:
-        accel_val, accel_label, accel_action = 0, "N/A", "N/A"
-    
-    st.markdown(f"""<div class="metric-box"><div class="m-label">Risk Momentum</div><div class="m-value" style="color:{'#FF3B30' if accel_val > 0.01 else '#28A745'}">{accel_label}</div>
-    <div class="m-context">Context: <b>{accel_action}</b></div></div>""", unsafe_allow_html=True)
+def _from_hdr() -> None:
+    st.session_state["scope_nav"] = st.session_state["scope_hdr"]
 
-with k3:
-    st.markdown(f"""<div class="metric-box"><div class="m-label">Resource Priority</div><div class="m-value" style="font-size:1.6rem;">{hotspot[0]}</div>
-    <div class="m-context">Primary Threat: <b>{hotspot[1]}</b></div></div>""", unsafe_allow_html=True)
 
-# --- 9. VISUAL INTELLIGENCE ---
-col_l, col_r = st.columns([1.8, 1.2], gap="large")
-
-with col_l:
-    # SPC Chart
-    with st.container(border=True):
-        fig_m = go.Figure()
-        fig_m.add_trace(go.Scatter(x=daily["Date"], y=daily["weighted_score"], name="Daily", line=dict(color="#E5E5E7")))
-        fig_m.add_trace(go.Scatter(x=daily["Date"], y=daily["smooth"], name="Trend", line=dict(color="#1D1D1F", width=3)))
-        fig_m.add_hline(y=ucl_value, line_dash="dot", line_color="#FF3B30", annotation_text=f"Tolerance ({sigma_val}σ)")
-        fig_m.update_layout(title="<b>STATISTICAL CONTROL (SPC)</b>", height=280, template="plotly_white", margin=dict(t=40, b=20, l=40, r=20), showlegend=False)
-        st.plotly_chart(fig_m, use_container_width=True, config={'displayModeBar': False})
-
-    # Momentum Chart
-    with st.container(border=True):
-        fig_a = px.area(daily, x="Date", y="acceleration")
-        fig_a.update_traces(line_color="#FF3B30", fillcolor="rgba(255, 59, 48, 0.1)")
-        fig_a.update_layout(title="<b>TREND ACCELERATION</b>", height=200, template="plotly_white", margin=dict(t=40, b=20, l=40, r=20), xaxis_title="", yaxis_title="")
-        st.plotly_chart(fig_a, use_container_width=True, config={'displayModeBar': False})
-
-with col_r:
-    # Harm Distribution
-    with st.container(border=True):
-        cat_sum = df_f.groupby("Category")["weighted_score"].sum().sort_values()
-        fig_b = go.Figure(go.Bar(
-            x=cat_sum.values, y=cat_sum.index, orientation='h',
-            marker=dict(color="#1D1D1F", cornerradius=10),
-            text=[f"<b>{cat}</b> | {val:,.0f} RPN" for cat, val in zip(cat_sum.index, cat_sum.values)],
-            textposition='inside', insidetextanchor='end', textfont=dict(size=14, color="white"),
-        ))
-        fig_b.update_layout(
-            title="<b>HARM DISTRIBUTION</b>", height=530, bargap=0.2,
-            template="plotly_white", showlegend=False, xaxis=dict(visible=False), yaxis=dict(visible=False),
-            margin=dict(t=60, b=20, l=10, r=10), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)'
-        )
-        st.plotly_chart(fig_b, use_container_width=True, config={'displayModeBar': False})
-
-# --- 10. MATRIX ---
-st.markdown("### Weekly Intensity Matrix")
-pivot = df_f.groupby(['Date', 'Unit'])['weighted_score'].sum().unstack().fillna(0)
-heat_data = pivot.resample('W').sum().T
-fig_h = px.imshow(heat_data, color_continuous_scale="YlOrRd")
-fig_h.update_layout(height=300, xaxis_title = "", yaxis_title="", coloraxis_showscale=False, margin=dict(t=10, b=10))
-st.plotly_chart(fig_h, use_container_width=True, config={'displayModeBar': False})
-
-st.caption(
-    "Research and demonstration software. Not a medical device and not intended for "
-    "clinical decision-making, diagnosis or treatment. Provided \"as is\", without warranty "
-    "of any kind; the author accepts no liability for any use. Uses synthetic data only. "
-    "Personal project · not affiliated with any employer · synthetic data only."
+# ── Header selectors (read first: the nav shows sigma for the chosen window and tolerance) ──
+head_l, h_unit, h_period, h_window, h_tol = st.columns(
+    [3.2, 1.3, 1.1, 1.1, 1.6], vertical_alignment="bottom"
 )
+with h_unit:
+    st.selectbox("Unit", scopes, key="scope_hdr", on_change=_from_hdr)
+with h_period:
+    period_label = st.selectbox("Period", list(PERIODS), index=len(PERIODS) - 1, key="period")
+with h_window:
+    window = WINDOWS[st.selectbox("Window", list(WINDOWS), index=1, key="window")]
+with h_tol:
+    sigma_label = st.selectbox("Tolerance", list(SIGMA_OPTIONS), index=1, key="tolerance")
+sigma = SIGMA_OPTIONS[sigma_label]
+
+# ── Period filter ────────────────────────────────────────────────────────────────────
+end_date = df["Date"].max()
+start_date = end_date - pd.Timedelta(days=PERIODS[period_label] - 1)
+in_period = cast(pd.DataFrame, df[df["Date"] >= start_date])
+
+
+# ── Left nav: units with their sigma now (engine, same period, window and tolerance) ──────
+def _nav_label(scope: str) -> str:
+    s = _scope_of(in_period, scope, window, sigma)
+    dot = {presentation.RED: ":red", presentation.AMBER: ":orange"}.get(
+        presentation.status_view(s).colour, ":primary"
+    )
+    return f"{dot}[●]  {scope}   :gray[{view.sigma_text(s.z_score)} σ]"
+
+
+with st.sidebar:
+    show(view.logo_html())
+    show(view.nav_views_html())
+    show(view.nav_units_title_html())
+    st.radio(
+        "Unit",
+        scopes,
+        key="scope_nav",
+        on_change=_from_nav,
+        format_func=_nav_label,
+        label_visibility="collapsed",
+    )
+
+selected = st.session_state["scope_nav"]
+scope_title = selected
+
+# ── Analytics: risk_kinematics only ──────────────────────────────────────────────────
+df_f = (
+    in_period if selected == WHOLE else cast(pd.DataFrame, in_period[in_period["Unit"] == selected])
+)
+kinetics = calculate_risk_kinetics(df_f, window, sigma)
+status = classify(kinetics.daily, kinetics.mean, kinetics.std, sigma)
+
+status_v = presentation.status_view(status)
+reason = presentation.status_reason(status, sigma)
+momentum = presentation.momentum_lines(kinetics.daily, window)
+hot_unit, hot_category = presentation.hotspot(df_f)
+
+with head_l:
+    show(view.header_html(scope_title))
+
+show(
+    view.kpis_html(
+        n_reports=len(df_f),
+        period_days=PERIODS[period_label],
+        status=status,
+        sigma=sigma,
+        view=status_v,
+        reason=reason,
+        momentum=momentum,
+    )
+)
+show(
+    view.hero_action_html(
+        daily=kinetics.daily,
+        ucl=kinetics.ucl,
+        status=status,
+        sigma=sigma,
+        scope=scope_title,
+        view=status_v,
+        reason=reason,
+        hot_unit=hot_unit,
+        hot_category=hot_category,
+        chart_note=(
+            f"{window}-day trend of harm-weighted incident score. "
+            f"The dashed line is the {sigma} σ limit."
+        ),
+    )
+)
+
+totals = cast(pd.Series, df_f.groupby("Category")["weighted_score"].sum()).sort_values(
+    ascending=False
+)
+grand = float(totals.sum())
+shares = [(str(k), float(v) / grand) for k, v in totals.items()] if grand > 0 else []
+first, last = df_f["Date"].min(), df_f["Date"].max()
+period_text = f"{first.day} {first:%b} to {last.day} {last:%b}" if not df_f.empty else "no days"
+show(
+    view.drivers_how_html(
+        shares=shares,
+        scope=scope_title,
+        period_text=period_text,
+        rule=presentation.status_rule_body(),
+    )
+)
+show(view.footer_html())

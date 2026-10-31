@@ -1,4 +1,4 @@
-# 🏥 Hospital Risk Intelligence Portal (V2)
+# 🏥 Hospital Risk Intelligence Portal (v2.1)
 ### *Kinetic Surveillance & Predictive Harm Intelligence*
 
 An executive-level surveillance engine that applies **kinematic principles (Velocity & Acceleration)** to hospital incident data. Instead of tracking static incident counts, this system identifies "Risk Surges" by calculating the momentum and pressure of harm before sentinel events occur.
@@ -25,18 +25,33 @@ Using a discrete time-step ($\Delta t$) defined by the user-selected window ($w$
 * **Velocity ($v$):** $$v = \frac{RPN_t - RPN_{t-w}}{w}$$
 * **Acceleration ($a$):** $$a = \frac{v_t - v_{t-w}}{w}$$
 
-## 📂 System Architecture (Modular)
-To ensure scalability and clinical reliability, the portal is architected into discrete functional modules:
+## 📸 What it looks like (v2.1.0)
+Desktop (1440 px):
 
-* `app.py`: **The Orchestrator.** Manages the Streamlit UI and executive dashboard state.
-* `risk_engine.py`: **The Mathematical Brain.** Contains the proprietary logic for RPN quantization, velocity derivatives, and Z-score thresholding.
-* `ui_styles.py`: **The Design System.** Defines the Apple-matte UI/CSS and clinical nomenclature (NCC MERP mapping).
-* `hospital_risk_data.csv`: The clinical dataset.
+![Risk early warning dashboard, desktop view](docs/screenshots/app_v2_1440.png)
+
+Phone (390 px):
+
+![Risk early warning dashboard, phone view](docs/screenshots/app_v2_390.png)
+
+The page opens on the unit with the highest risk. Each card says in words what it shows. The status card gives the reason in one line. The Momentum card shows the latest day and the trend side by side, so the two never contradict each other.
+
+## 📂 System Architecture (Modular)
+* `app.py`: **The Orchestrator.** Streamlit page: unit, period, window and tolerance selectors, wired to the engine.
+* `risk_kinematics/`: **The Mathematical Brain.** `harm.py` (harm levels A-I to RPN weights) and `kinetics.py` (velocity, acceleration, control limit, sigma, strategic status, trend rule).
+* `clinical_risk_dashboard/presentation.py`: **Words and colours.** Status labels, reason lines, momentum text. It computes no risk number.
+* `clinical_risk_dashboard/view.py`: **HTML parts.** KPI cards, SVG trend, drivers, footer.
+* `clinical_risk_dashboard/static/`: **Design system.** One stylesheet and the font (SIL OFL), loaded from disk. No network call.
+* `clinical_risk_dashboard/sample_data.py`: **Synthetic incident log** used by the page.
+* `tests/`: **224 tests.** Dashboard (page, presentation, view, sample data) and engine characterisation tests.
+* `hospital_risk_data.csv`: example dataset (synthetic).
 
 ## 🛠️ Deployment
-1. **Activate Environment:** `.\venv\Scripts\Activate.ps1`
-2. **Install Dependencies:** `pip install -r requirements.txt`
-3. **Launch Portal:** `streamlit run app.py`
+1. **Create an environment:** `python -m venv venv`, then activate it (`.env\Scripts\Activate.ps1` on Windows).
+2. **Install dependencies:** `pip install -r requirements.txt` (Streamlit 1.64 or newer, pandas, numpy). For tests also `pip install pytest`.
+3. **Launch the portal** from the repository root: `streamlit run app.py`
+4. **Run the tests:** `python -m pytest` (224 tests).
+
 ## Licence
 
 Code is licensed under **AGPL-3.0-or-later** (see [`LICENSE`](LICENSE)); a commercial licence is available on request from the author via [LinkedIn](https://www.linkedin.com/in/martin-monteagudo-farina/). Non-code content is under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Details in [`LICENSING.md`](LICENSING.md).

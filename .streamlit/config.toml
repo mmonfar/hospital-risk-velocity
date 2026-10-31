@@ -1,0 +1,17 @@
+# Risk early warning theme. Amber is the "watch" colour.
+[theme]
+base = "light"
+primaryColor = "#008080"
+backgroundColor = "#F5F5F2"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#17242B"
+baseRadius = "12px"
+borderColor = "#E6E8E7"
+orangeColor = "#C98A1B"
+redColor = "#B3402F"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
