@@ -10,7 +10,8 @@
 .stApp{background:var(--rw-canvas);color:var(--rw-ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .stApp p,.stApp label,.stApp input,.stApp button,.stApp [data-baseweb] div{font-family:"Plus Jakarta Sans",system-ui,sans-serif}
 [data-testid="stHeader"]{background:transparent}
-[data-testid="stToolbar"],[data-testid="stDecoration"]{display:none}
+[data-testid="stDecoration"],[data-testid="stToolbarActions"],[data-testid="stMainMenu"],[data-testid="stAppDeployButton"]{display:none}
+[data-testid="stExpandSidebarButton"]{color:var(--rw-ink)}
 .stMainBlockContainer,.block-container{max-width:1232px;padding:28px 32px 20px}
 .stMainBlockContainer [data-testid="stVerticalBlock"]{gap:var(--rw-g)}
 [data-testid="stSidebar"]{background:var(--rw-card);border-right:1px solid var(--rw-rule)}
