@@ -19,3 +19,6 @@ Thumbs.db
 
 # Local environment variables
 .env
+
+# Local marketing drafts are not tracked.
+marketing/
