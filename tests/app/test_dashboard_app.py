@@ -10,7 +10,7 @@ from clinical_risk_dashboard.sample_data import UNITS, generate_incidents
 from risk_kinematics import StrategicStatus, calculate_risk_kinetics, classify
 from streamlit.testing.v1 import AppTest
 
-APP = Path(__file__).resolve().parents[1] / "app.py"
+APP = Path(__file__).resolve().parents[2] / "src" / "clinical_risk_dashboard" / "app.py"
 SIGMAS = {"1σ  Zero tolerance": 1, "2σ  Standard": 2, "3σ  Critical only": 3}
 
 

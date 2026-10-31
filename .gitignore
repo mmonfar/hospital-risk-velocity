@@ -1,21 +1,21 @@
-# Virtual Environment
+# Python environments and caches
 venv/
+.venv/
 env/
-.env
-
-# Python Cache
 __pycache__/
 *.py[cod]
-*$py.class
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
 
-# Streamlit/OS local files
-.streamlit/
-.DS_Store
+# Streamlit secrets (the theme config in .streamlit/config.toml is kept)
+.streamlit/secrets.toml
+
+# OS files
 Thumbs.db
+.DS_Store
 
-# Archive
-archive/
-
-# Large Data (Optional)
-# If your CSV gets too big, uncomment the next line
-# hospital_risk_data.csv
+# Local environment variables
+.env

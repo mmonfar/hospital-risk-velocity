@@ -14,9 +14,9 @@ import pandas as pd
 TREND_RUN_DAYS = 6
 """Days in a row the smoothed trend line must rise before the status reports a rising trend.
 
-Six rising points in a row is the usual run-chart trend rule (general SPC practice; the
-brain holds no SPC source, so this is not brain-cited). It is judged on the same smoothed
-"Trend" line the dashboard chart draws, so the status can never contradict the chart.
+Six rising points in a row is used as a run-chart convention (general statistical
+process control practice); it is not yet tied to a published source. It is judged on the same
+smoothed "Trend" line the dashboard chart draws, so the status can never contradict the chart.
 """
 
 CONFIDENCE_BY_SIGMA: dict[float, str] = {1: "68%", 2: "95%", 3: "99.7%"}
@@ -44,7 +44,7 @@ class StrategicStatus:
     z_score: float
     tolerance: Tolerance
     confidence: str
-    """Label for sigma. Values outside 1-3 fall back to "95%", as in the original."""
+    """Label for sigma. Values outside 1-3 fall back to "95%"."""
     rising_trend: bool = False
     """True when the trend line rose every day for the last ``TREND_RUN_DAYS`` days."""
 
@@ -85,7 +85,7 @@ def classify(daily: pd.DataFrame, mean: float, std: float, sigma: float) -> Stra
 
     "Latest complete" is the last row with no NaN in any column. The first
     2 x window days have no acceleration, so a period shorter than that is
-    NO_DATA. With ``std == 0`` the z-score is inf or nan, unchanged from the original.
+    NO_DATA. With ``std == 0`` the z-score is inf or nan.
 
     Trend rule (plain words): the status also looks at direction. If the smoothed trend
     line rose on each of the last ``TREND_RUN_DAYS`` days, a ward whose latest day is within

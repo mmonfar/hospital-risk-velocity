@@ -11,7 +11,7 @@ from risk_kinematics.kinetics import (
     has_rising_trend,
 )
 
-__version__ = "0.1.0"
+__version__ = "2.0.0"
 
 __all__ = [
     "TREND_RUN_DAYS",

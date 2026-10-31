@@ -16,7 +16,7 @@ HARM_WEIGHTS: dict[str, int] = {level: (i + 1) ** 2 for i, level in enumerate(HA
 def add_harm_scores(df: pd.DataFrame, column: str = "Harm_Level") -> pd.DataFrame:
     """Return a copy with ``weighted_score`` and ``raw_level`` columns.
 
-    Unknown levels map to NaN, as in the original.
+    Unknown levels map to NaN.
     """
     out = df.copy()
     levels = cast(pd.Series, out[column])

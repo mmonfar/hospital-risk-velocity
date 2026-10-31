@@ -1,31 +1,40 @@
-# 🏥 Hospital Risk Intelligence Portal (v2.1)
-### *Kinetic Surveillance & Predictive Harm Intelligence*
+# Hospital Risk Velocity (v2.1)
 
-An executive-level surveillance engine that applies **kinematic principles (Velocity & Acceleration)** to hospital incident data. Instead of tracking static incident counts, this system identifies "Risk Surges" by calculating the momentum and pressure of harm before sentinel events occur.
+Clinical risk dashboard: turns a log of incident reports into a daily harm score, and shows its velocity and acceleration, a control limit and a rising-trend check.
+**Status: Prototype · synthetic data · not a medical device.**
 
-## 🚀 The Strategic Theory: Harm Kinematics
-Standard hospital reporting is **reactive**. This engine bridges the gap between the ICU and the Boardroom by applying **Classical Mechanics** to patient safety data:
+---
 
-1. **Quantization (Position):** Categorical Harm Levels (A-I) are encoded into a continuous **Risk Priority Number (RPN)**.
-2. **Risk Velocity ($v$):** The first derivative of risk. It measures the rate at which harm accumulates over a sliding window ($w$).
-3. **Risk Acceleration ($a$):** The second derivative. This is the **Early Warning Signal**. It detects if risk is *compounding*, predicting systemic breakdown.
+## What it does
 
-## 📊 Methodology & Risk Appetite
+Counting incidents says little about whether risk is building up. This dashboard scores each incident by harm level, adds the scores up per calendar day, and then asks three questions of that daily series: is the latest day unusually high, is the trend line rising, and is the rise speeding up?
 
-### 1. Statistical Tolerance (The Sigma Filter)
-The engine utilizes a **Risk Appetite Selector** allowing executives to define their tolerance for variance:
-* **Zero Tolerance ($1\sigma$):** Alerts on top 32% of deviations.
-* **Standard Oversight ($2\sigma$):** Alerts on top 5% (Statistical Outliers).
-* **Critical Focus ($3\sigma$):** Alerts only on the top 0.3% of extreme events.
+One page. The left list ranks the units by risk. The header has selectors for scope (whole hospital or one unit), analysis period, kinetic window (3, 7 or 15 days) and tolerance mode (1, 2 or 3 sigma). The cards are:
 
+- **Status**: one of *Within tolerance*, *Marginal variance*, *Outside tolerance* or *No data*, with a plain-words action and a "Why" line (for example "Raised by the trend: it rose 6 days in a row").
+- **Four KPI cards**, including **Momentum (latest day)**: whether the acceleration on the latest complete day is increasing, flat or decreasing. The card shows the trend state beside it, so a cooling latest day is never read as all clear while the trend line is still rising.
+- **Trend chart**: daily harm score with trend line, control limit and a "Now" marker.
+- **Drivers**: the unit and category with the largest total harm score in the selected period.
+- **How the status is decided**: the rule in plain words.
 
+The data are generated, not loaded: a seeded generator (`clinical_risk_dashboard.sample_data.generate_incidents`) produces 90 days of synthetic incident reports for five units and five categories, with a surge of medication events in one unit over the last 14 days so the dashboard has a signal to find.
 
-### 2. The Kinetic Algorithm
-Using a discrete time-step ($\Delta t$) defined by the user-selected window ($w$):
-* **Velocity ($v$):** $$v = \frac{RPN_t - RPN_{t-w}}{w}$$
-* **Acceleration ($a$):** $$a = \frac{v_t - v_{t-w}}{w}$$
+## How to run
 
-## 📸 What it looks like (v2.1.0)
+Python 3.11 or newer.
+
+```bash
+git clone https://github.com/mmonfar/hospital-risk-velocity.git
+cd hospital-risk-velocity
+python -m venv .venv
+.venv/bin/pip install -e ".[dev]"        # Windows: .venv\Scripts\pip install -e ".[dev]"
+.venv/bin/streamlit run app.py          # run from the repository root
+.venv/bin/pytest                          # optional: the test suite (228 tests)
+```
+
+Everything installs from PyPI (numpy, pandas, streamlit). The theme and its font are bundled, so the app needs no other folder or external service.
+
+## What it looks like (v2.1.0)
 Desktop (1440 px):
 
 ![Risk early warning dashboard, desktop view](docs/screenshots/app_v2_1440.png)
@@ -36,25 +45,49 @@ Phone (390 px):
 
 The page opens on the unit with the highest risk. Each card says in words what it shows. The status card gives the reason in one line. The Momentum card shows the latest day and the trend side by side, so the two never contradict each other.
 
-## 📂 System Architecture (Modular)
-* `app.py`: **The Orchestrator.** Streamlit page: unit, period, window and tolerance selectors, wired to the engine.
-* `risk_kinematics/`: **The Mathematical Brain.** `harm.py` (harm levels A-I to RPN weights) and `kinetics.py` (velocity, acceleration, control limit, sigma, strategic status, trend rule).
-* `clinical_risk_dashboard/presentation.py`: **Words and colours.** Status labels, reason lines, momentum text. It computes no risk number.
-* `clinical_risk_dashboard/view.py`: **HTML parts.** KPI cards, SVG trend, drivers, footer.
-* `clinical_risk_dashboard/static/`: **Design system.** One stylesheet and the font (SIL OFL), loaded from disk. No network call.
-* `clinical_risk_dashboard/sample_data.py`: **Synthetic incident log** used by the page.
-* `tests/`: **224 tests.** Dashboard (page, presentation, view, sample data) and engine characterisation tests.
-* `hospital_risk_data.csv`: example dataset (synthetic).
+## The method in brief
 
-## 🛠️ Deployment
-1. **Create an environment:** `python -m venv venv`, then activate it (`.env\Scripts\Activate.ps1` on Windows).
-2. **Install dependencies:** `pip install -r requirements.txt` (Streamlit 1.64 or newer, pandas, numpy). For tests also `pip install pytest`.
-3. **Launch the portal** from the repository root: `streamlit run app.py`
-4. **Run the tests:** `python -m pytest` (224 tests).
+1. **Harm score.** Each incident has a harm level A to I (NCC MERP categories, A = no error, I = death). Its weight is the square of its ordinal position (A = 1, B = 4, ... I = 81), so severe events dominate a daily sum.
+2. **Daily series, calendar-linear.** Weighted scores are summed per day. Days are reindexed to a complete calendar from the first to the last event, and a day with no events counts as zero. The x axis is therefore linear in calendar time, and every mean, limit and rate is per calendar day, not per day with a report.
+3. **Velocity and acceleration.** The daily score is smoothed with a centred rolling mean over the chosen window `w`. Velocity is the difference of the smoothed series over `w` days divided by `w`; acceleration is the same operation on velocity. The first 2 x `w` days have no acceleration.
+4. **Control limit and status.** Mean and standard deviation are taken over the selected period. The latest complete day gives a z-score: above the chosen sigma is *Outside tolerance*, above 0.7 x sigma is *Marginal variance*, otherwise *Within tolerance*.
+5. **Rising-trend rule.** If the smoothed trend line rose on each of the last 6 days, a status that would read *Within tolerance* is raised to *Marginal variance*. The trend can raise a status to Marginal only; it never lowers a status and never overrides *Outside tolerance*. The 6-day run is a run-chart convention from general statistical process control practice. It is not yet tied to a published source.
+6. **Momentum card.** The latest complete day's acceleration is labelled *Increasing* above +0.01, *Decreasing* below -0.01 and *Flat* in between. This is a display cut-off. The card states that it describes the latest day and shows the 6-day trend state next to it.
+
+## Parameters
+
+| Parameter | Value | Where | Status |
+|---|---|---|---|
+| Harm weights | square of the ordinal position of level A to I (1 to 81) | `risk_kinematics.harm` | Design choice |
+| Kinetic window | 3, 7 or 15 days (default 7) | page selector | User input |
+| Tolerance mode | 1, 2 or 3 sigma (68%, 95%, 99.7%; default 2) | page selector | User input |
+| Marginal band | above 0.7 x sigma | `risk_kinematics.kinetics` | Convention, not sourced |
+| Rising-trend run | 6 consecutive rising days | `TREND_RUN_DAYS` | Run-chart convention, not yet sourced |
+| Momentum cut-off | +/- 0.01 acceleration | `presentation.MOMENTUM_DEADBAND` | Display threshold |
+| Synthetic data | seed 7, 90 days, about 5.5 reports a day plus a 14-day surge | `sample_data` | Synthetic |
+
+## Limitations
+
+- Prototype on synthetic data. It has not been validated against real incident data, gives no forecast and has no tested warning performance (sensitivity, false alerts).
+- The harm weights, the 0.7 x sigma band and the 6-day run are conventions, not calibrated or sourced values.
+- A single daily total is sensitive to reporting volume: more reporting (not more harm) raises the score. Reporting culture is not modelled.
+- Mean and standard deviation come from the selected period itself, so a long surge inside a short period inflates the baseline.
+- The latest complete day is the one judged; periods shorter than about 2 x window days return *No data*.
+- Near-zero variation gives an unstable z-score.
+
+## Project layout
+
+```
+src/risk_kinematics/           engine: harm scores, velocity, acceleration, control limit, status, trend rule
+src/clinical_risk_dashboard/   Streamlit page, HTML parts (view.py), words and colours (presentation.py),
+                               seeded synthetic data generator, stylesheet and font (static/)
+tests/engine/                  engine tests
+tests/app/                     page, presentation, view and data tests (synthetic data only)
+```
 
 ## Licence
 
-Code is licensed under **AGPL-3.0-or-later** (see [`LICENSE`](LICENSE)); a commercial licence is available on request from the author via [LinkedIn](https://www.linkedin.com/in/martin-monteagudo-farina/). Non-code content is under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Details in [`LICENSING.md`](LICENSING.md).
+Code is licensed under **AGPL-3.0-or-later** (see [`LICENSE`](LICENSE)); a commercial licence is available on request from the author via [LinkedIn](https://www.linkedin.com/in/martin-monteagudo-farina/). Non-code content is under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Details in [`LICENSING.md`](LICENSING.md). The two bundled fonts keep their own SIL Open Font License 1.1 (`src/clinical_risk_dashboard/brand/fonts/OFL.txt`).
 
 ## Disclaimer
 
