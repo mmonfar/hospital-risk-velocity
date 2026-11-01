@@ -48,7 +48,7 @@ scopes = [WHOLE, *units]
 def _scope_of(df_part: pd.DataFrame, scope: str, window: int, sigma: int):
     part = df_part if scope == WHOLE else cast(pd.DataFrame, df_part[df_part["Unit"] == scope])
     k = calculate_risk_kinetics(part, window, sigma)
-    return classify(k.daily, k.mean, k.std, sigma)
+    return classify(k.daily, k.mean, k.std, sigma, window)
 
 
 # The unit is chosen in the left nav or in the header: two widgets, kept in step.
@@ -119,7 +119,7 @@ df_f = (
     in_period if selected == WHOLE else cast(pd.DataFrame, in_period[in_period["Unit"] == selected])
 )
 kinetics = calculate_risk_kinetics(df_f, window, sigma)
-status = classify(kinetics.daily, kinetics.mean, kinetics.std, sigma)
+status = classify(kinetics.daily, kinetics.mean, kinetics.std, sigma, window)
 
 status_v = presentation.status_view(status)
 reason = presentation.status_reason(status, sigma)
@@ -153,7 +153,7 @@ show(
         hot_category=hot_category,
         chart_note=(
             f"{window}-day trend of harm-weighted incident score. "
-            f"The dashed line is the {sigma} σ limit."
+            f"The dashed line is the {sigma} σ limit for a {window}-day average."
         ),
     )
 )

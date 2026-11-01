@@ -32,9 +32,10 @@ MOMENTUM_DEADBAND = 0.01
 
 
 STATUS_RULE_BODY = (
-    "The latest day is compared with the normal range for the period, and the trend line "
+    "The latest average over the chosen window is compared with the normal range for the "
+    "period (the limit is set for an average, not for one day), and the trend line "
     "is checked too. If the trend line has gone up every day for the last {days} days, the "
-    "status is at least Marginal variance, even when the latest day looks normal. "
+    "status is at least Marginal variance, even when the latest average looks normal. "
     "A rising trend never lowers an alert."
 )
 STATUS_RULE = "How the status is decided: " + STATUS_RULE_BODY
@@ -159,12 +160,12 @@ def status_reason(status: StrategicStatus, sigma: float) -> str:
     if t is Tolerance.NO_DATA:
         return "Not enough complete days in this period."
     if t is Tolerance.OUTSIDE:
-        return f"Latest day is above the {sigma:g} σ limit."
+        return f"The latest average is above the {sigma:g} σ limit."
     if t is Tolerance.MARGINAL:
         if status.z_score > sigma * 0.7:
-            return f"Latest day is within 30% of the {sigma:g} σ limit."
+            return f"The latest average is within 30% of the {sigma:g} σ limit."
         return f"Raised by the trend: it rose {TREND_RUN_DAYS} days in a row."
-    return "Latest day is inside the normal range."
+    return "The latest average is inside the normal range."
 
 
 def headline(status: StrategicStatus, sigma: float, scope: str) -> str:

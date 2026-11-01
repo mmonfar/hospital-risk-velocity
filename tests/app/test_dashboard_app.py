@@ -30,7 +30,7 @@ def engine(unit: str | None, window: int, sigma: int) -> StrategicStatus:
     if unit is not None:
         df = cast(pd.DataFrame, df[df["Unit"] == unit])
     k = calculate_risk_kinetics(df, window, sigma)
-    return classify(k.daily, k.mean, k.std, sigma)
+    return classify(k.daily, k.mean, k.std, sigma, window)
 
 
 @pytest.fixture(scope="module")

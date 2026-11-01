@@ -46,7 +46,7 @@ def test_ui_status_matches_risk_kinematics(
     if scope is not None:
         df = cast(pd.DataFrame, df[df["Unit"] == scope])
     k = calculate_risk_kinetics(df, window, sigma)
-    status = classify(k.daily, k.mean, k.std, sigma)
+    status = classify(k.daily, k.mean, k.std, sigma, window)
     view = presentation.status_view(status)
 
     assert view.label == status.tolerance.value
@@ -114,6 +114,6 @@ def test_ward_with_rising_trend_shows_trend_on_momentum_card() -> None:
     df = generate_incidents(seed=42)
     for unit in UNITS:
         k = calculate_risk_kinetics(cast(pd.DataFrame, df[df["Unit"] == unit]), 7, 2)
-        status = classify(k.daily, k.mean, k.std, 2)
+        status = classify(k.daily, k.mean, k.std, 2, 7)
         view = presentation.momentum_view(k.daily, status.rising_trend)
         assert ("Trend: rising" in view.context) == status.rising_trend

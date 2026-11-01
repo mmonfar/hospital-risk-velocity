@@ -2,6 +2,9 @@
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+- Engine: the trend line is a trailing moving average (no line before a full window). The limit is mean + sigma x daily sd / sqrt(window) and the status z uses the same scale, so the line is over the limit exactly when the status says Outside. A status needs 3 x window days. See docs/FINDINGS.md in the clinical-platform dashboard.
+
 ## [2.1.0] - 2026-10-31
 - New page design: left unit list with risk (sigma), header selectors (unit, period, window, tolerance), four KPI cards, trend chart with limit and "Now" marker, action card with a "Why" line, drivers, and a "How the status is decided" card.
 - Momentum card fixed: it now shows "Latest day" and "trend" as two lines, so it no longer says "decreasing" beside a chart that climbed.

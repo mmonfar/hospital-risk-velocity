@@ -8,7 +8,7 @@ from risk_kinematics import Tolerance, add_harm_scores, calculate_risk_kinetics,
 
 def test_rising_trend_ward_never_reads_within_tolerance() -> None:
     # noisy baseline, then six climbing days; latest day alone is within the normal range
-    levels = ["C", "F", "B", "G", "D", "A", "H", "C"] * 6 + ["B", "C", "D", "E", "F", "G", "G"]
+    levels = ["C", "F", "B", "G", "D", "A", "H", "C"] * 6 + ["B", "B", "B", "C", "D", "E", "F", "G", "G"]
     log = add_harm_scores(
         pd.DataFrame(
             {
@@ -18,7 +18,7 @@ def test_rising_trend_ward_never_reads_within_tolerance() -> None:
         )
     )
     k = calculate_risk_kinetics(log, 3, 3)
-    status = classify(k.daily, k.mean, k.std, 3)
+    status = classify(k.daily, k.mean, k.std, 3, 3)
     view = presentation.status_view(status)
     assert status.rising_trend
     assert view.label != Tolerance.WITHIN.value

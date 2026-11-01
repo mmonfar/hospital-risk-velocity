@@ -60,7 +60,7 @@ def test_hero_and_kpi_parts_build_for_every_unit(unit: str) -> None:
     df = generate_incidents()
     part = cast(pd.DataFrame, df[df["Unit"] == unit])
     k = calculate_risk_kinetics(part, 7, 2)
-    status = classify(k.daily, k.mean, k.std, 2)
+    status = classify(k.daily, k.mean, k.std, 2, 7)
     reason = presentation.status_reason(status, 2)
     html = view.kpis_html(
         n_reports=len(part),
