@@ -19,7 +19,7 @@ Share of runs with an alarm within 30 days of the change, among runs with no ear
 | Average days to a false alarm, stable ward | 582 | 432 | 366 | 360 | 334 |
 | False alarm within one year, stable ward | 47% | 57% | 63% | 65% | 67% |
 
-The false-alarm rates are not equal. The total count chart has the strictest limit, so with equal false alarms it would detect more than it shows here; this was not measured. No smoothed total count chart was tested.
+The false-alarm rates are not equal. The total count chart has the strictest limit, so with equal false alarms it would detect more than it shows here; this was not measured. A smoothed total count chart was tested later: see [Counts by harm category](#counts-by-harm-category).
 
 ## Pros and cons
 
@@ -63,6 +63,28 @@ Two monitors, smoothed chart, limits not recalibrated: squared + harm-only 88%, 
 - **What moved.** The average days to a false alarm for the smoothed squared chart rose from 334 to 375. Across 10 further seeds at the original run size it ranged from 347 to 414 days, about 2.3 times its stated error, so its false-alarm figure is less exact than the first table suggests. Arithmetic and squared swapped places on this row (360 against 334, then 360 against 375): do not read a small gap there as real.
 - **What it cannot show.** More runs narrow the error for this generator. They do not test its assumptions, and they say nothing new about real wards. The tool's own false-alarm numbers below were not rerun.
 
+## Counts by harm category
+
+Added after the results above, and not planned in advance: the usual way of watching incidents by category, on the same data as the larger run. No weights. All smoothed charts below are set to about one false alarm a year.
+
+| Chart | All incidents double | More severe | More no-harm reports only (lower is better) | Days to a false alarm |
+|---|---|---|---|---|
+| Nine daily charts, one per level | 84% | 42% | 49% | 125 |
+| Nine daily charts, stricter limits | 34% | 12% | 10% | 949 |
+| Nine smoothed charts, one shared limit | 27% | 19% | 5% | 378 |
+| Smoothed total count | 97% | 8% | 56% | 360 |
+| Smoothed count of levels E-I | 64% | 64% | 8% | 354 |
+| **Two smoothed counts (total + E-I), one shared limit** | 93% | 57% | 39% | 364 |
+| Smoothed score, arithmetic | 95% | 25% | 40% | 360 |
+| Smoothed score, squared | 87% | 41% | 22% | 375 |
+| Smoothed score, harm-only | 59% | 58% | 8% | 380 |
+
+- **A chart per level does poorly.** Either many false alarms or low detection.
+- **Smoothed counts match or beat the score on one kind of change.** The total count does better than any weighting on overall rises, and is nearly blind to severity. The E-I count does better than squared weights on severity.
+- **Two counts against one score.** Two counts beat squared weights on overall rises and on severity, but give more false signal from extra no-harm reports (39% against 22%). By the rule set before the run, neither is better overall. Against arithmetic weights, two counts are about equal on rises and false signal, and far better on severity.
+- **What the score keeps.** One number to watch, and with squared weights less false signal from extra no-harm reports. Two counts also show which count moved; whether that helps a reviewer was not tested.
+- **Limits of this result.** Exploratory: the two-count chart was chosen after seeing the other results. One generator, synthetic data, levels assumed to be graded correctly.
+
 ## False alarms of the tool
 
 Simulated stable ward, 2 reports a day, 7-day window, squared weights. Days on average to the first alarm:
@@ -76,5 +98,4 @@ Simulated stable ward, 2 reports a day, 7-day window, squared weights. Days on a
 
 ## Not tested
 
-- **Count by harm category** (one chart per level, or a count of levels E-I). The usual way of reporting incidents by category was not in the study, so no advantage over it can be claimed. The nearest results differ: the total count ignores harm levels, and harm-only is still a weighted score.
 - Real incident data. All of this is synthetic.
