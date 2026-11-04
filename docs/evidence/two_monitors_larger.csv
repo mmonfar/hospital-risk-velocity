@@ -1,0 +1,61 @@
+scenario,method,monitors,arl0,arl0_mcse,fa365,pod30,pod30_mcse
+IC5,M2,squared,368.2403,1.8898,0.6289,,
+IC5,M2,linear,430.0468,2.2397,0.5728,,
+IC5,M2,harm_only,370.6994,1.9034,0.6256,,
+IC5,M2,squared + harm_only,269.9595,1.3612,0.7419,,
+IC5,M2,linear + harm_only,235.4751,1.1831,0.7885,,
+IC5,M4,squared,374.6376,1.9246,0.6234,,
+IC5,M4,linear,359.8894,1.8426,0.636,,
+IC5,M4,harm_only,379.702,1.9533,0.6164,,
+IC5,M4,squared + harm_only,273.6906,1.3806,0.7365,,
+IC5,M4,linear + harm_only,224.3545,1.1258,0.8032,,
+IC5,M5,squared,375.4369,1.9288,0.6238,,
+IC5,M5,linear,361.9774,1.8542,0.6355,,
+IC5,M5,harm_only,368.2008,1.8892,0.6306,,
+IC5,M5,squared + harm_only,271.2692,1.3684,0.7434,,
+IC5,M5,linear + harm_only,223.0835,1.1196,0.808,,
+REP,M2,squared,,,,0.1472,0.0027
+REP,M2,linear,,,,0.2323,0.0032
+REP,M2,harm_only,,,,0.0835,0.0021
+REP,M2,squared + harm_only,,,,0.1654,0.0029
+REP,M2,linear + harm_only,,,,0.2681,0.0036
+REP,M4,squared,,,,0.2247,0.0032
+REP,M4,linear,,,,0.4023,0.0038
+REP,M4,harm_only,,,,0.0792,0.0021
+REP,M4,squared + harm_only,,,,0.2333,0.0033
+REP,M4,linear + harm_only,,,,0.418,0.004
+REP,M5,squared,,,,0.2217,0.0032
+REP,M5,linear,,,,0.4059,0.0038
+REP,M5,harm_only,,,,0.0799,0.0021
+REP,M5,squared + harm_only,,,,0.2302,0.0033
+REP,M5,linear + harm_only,,,,0.4224,0.004
+S2,M2,squared,,,,0.5841,0.0038
+S2,M2,linear,,,,0.6936,0.0035
+S2,M2,harm_only,,,,0.3805,0.0037
+S2,M2,squared + harm_only,,,,0.6113,0.0038
+S2,M2,linear + harm_only,,,,0.7409,0.0035
+S2,M4,squared,,,,0.8726,0.0026
+S2,M4,linear,,,,0.9459,0.0017
+S2,M4,harm_only,,,,0.5945,0.0038
+S2,M4,squared + harm_only,,,,0.8766,0.0026
+S2,M4,linear + harm_only,,,,0.9516,0.0017
+S2,M5,squared,,,,0.8829,0.0025
+S2,M5,linear,,,,0.9545,0.0016
+S2,M5,harm_only,,,,0.603,0.0038
+S2,M5,squared + harm_only,,,,0.8869,0.0025
+S2,M5,linear + harm_only,,,,0.9579,0.0016
+SEV,M2,squared,,,,0.2912,0.0035
+SEV,M2,linear,,,,0.1692,0.0028
+SEV,M2,harm_only,,,,0.3856,0.0037
+SEV,M2,squared + harm_only,,,,0.4122,0.0039
+SEV,M2,linear + harm_only,,,,0.4158,0.004
+SEV,M4,squared,,,,0.4132,0.0038
+SEV,M4,linear,,,,0.2454,0.0033
+SEV,M4,harm_only,,,,0.5792,0.0038
+SEV,M4,squared + harm_only,,,,0.592,0.0039
+SEV,M4,linear + harm_only,,,,0.594,0.004
+SEV,M5,squared,,,,0.425,0.0038
+SEV,M5,linear,,,,0.2509,0.0033
+SEV,M5,harm_only,,,,0.6013,0.0037
+SEV,M5,squared + harm_only,,,,0.6136,0.0038
+SEV,M5,linear + harm_only,,,,0.6132,0.0039

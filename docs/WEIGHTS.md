@@ -44,6 +44,25 @@ Exploratory, and not part of the study's planned analysis. A pair alarms when th
 
 A pair sees both overall rises and severity, at the cost of about 40-70% more false alarms than the better single chart (average days to a false alarm 256 and 217, against 367). The pairs were not recalibrated to equal false-alarm rates, so these detection figures are not a fair win over one chart.
 
+## Larger run
+
+Added after the results above, and not planned in advance: the same code and generator, a new seed and 20 times the runs (20,000 per scenario, 40,000 for the stable ward).
+
+| | Single-day chart | | | Smoothed chart (EWMA) | |
+|---|---|---|---|---|---|
+| | Total count | Arithmetic | Squared | Arithmetic | Squared |
+| All incidents double | 69% | 69% | 58% | 95% | 87% |
+| Same volume, more severe | 5% | 17% | 29% | 25% | 41% |
+| More no-harm reports only (lower is better) | 26% | 23% | 15% | 40% | 22% |
+| Average days to a false alarm, stable ward | 587 | 430 | 368 | 360 | 375 |
+| False alarm within one year, stable ward | 46% | 57% | 63% | 64% | 62% |
+
+Two monitors, smoothed chart, limits not recalibrated: squared + harm-only 88%, 59%, 23%, 274 days; arithmetic + harm-only 95%, 59%, 42%, 224 days ([`evidence/two_monitors_larger.csv`](evidence/two_monitors_larger.csv)).
+
+- **What held.** Every ordering set before the run: arithmetic above squared above harm-only on overall rises, the reverse on severity, and the score charts above the total count on severity.
+- **What moved.** The average days to a false alarm for the smoothed squared chart rose from 334 to 375. Across 10 further seeds at the original run size it ranged from 347 to 414 days, about 2.3 times its stated error, so its false-alarm figure is less exact than the first table suggests. Arithmetic and squared swapped places on this row (360 against 334, then 360 against 375): do not read a small gap there as real.
+- **What it cannot show.** More runs narrow the error for this generator. They do not test its assumptions, and they say nothing new about real wards. The tool's own false-alarm numbers below were not rerun.
+
 ## False alarms of the tool
 
 Simulated stable ward, 2 reports a day, 7-day window, squared weights. Days on average to the first alarm:

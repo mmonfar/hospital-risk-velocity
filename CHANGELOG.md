@@ -3,7 +3,7 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- Docs: `docs/WEIGHTS.md` shows squared and arithmetic weights side by side, with pros and cons, simulated false-alarm numbers and two monitors run together. Default weights unchanged. README: two statements corrected.
+- Docs: `docs/WEIGHTS.md` shows squared and arithmetic weights side by side, with pros and cons, simulated false-alarm numbers and two monitors run together. Default weights unchanged. README: two statements corrected. Larger-run check added (20 times the runs, new seed): orderings held; false-alarm figure of the smoothed charts less exact than first shown.
 - Engine: the trend line is a trailing moving average (no line before a full window). The limit is mean + sigma x daily sd / sqrt(window) and the status z uses the same scale, so the line is over the limit exactly when the status says Outside. A status needs 3 x window days. See docs/FINDINGS.md in the clinical-platform dashboard.
 
 ## [2.1.0] - 2026-10-31
