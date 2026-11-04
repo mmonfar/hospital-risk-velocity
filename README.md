@@ -7,7 +7,7 @@ Clinical risk dashboard: turns a log of incident reports into a daily harm score
 
 ## What it does
 
-Counting incidents says little about whether risk is building up. This dashboard scores each incident by harm level, adds the scores up per calendar day, and then asks three questions of that daily series: is the latest day unusually high, is the trend line rising, and is the rise speeding up?
+A total count of incidents can miss a change in severity: the same number of reports can carry more harm. This dashboard scores each incident by harm level, adds the scores up per calendar day, and then asks three questions of that daily series: is the latest day unusually high, is the trend line rising, and is the rise speeding up?
 
 One page. The left list ranks the units by risk. The header has selectors for scope (whole hospital or one unit), analysis period, kinetic window (3, 7 or 15 days) and tolerance mode (1, 2 or 3 sigma). The cards are:
 
@@ -58,9 +58,9 @@ The page opens on the unit with the highest risk. Each card says in words what i
 
 | Parameter | Value | Where | Status |
 |---|---|---|---|
-| Harm weights | square of the ordinal position of level A to I (1 to 81) | `risk_kinematics.harm` | Design choice |
+| Harm weights | square of the ordinal position of level A to I (1 to 81) | `risk_kinematics.harm` | Design choice; compared with arithmetic weights in [`docs/WEIGHTS.md`](docs/WEIGHTS.md) |
 | Kinetic window | 3, 7 or 15 days (default 7) | page selector | User input |
-| Tolerance mode | 1, 2 or 3 sigma (68%, 95%, 99.7%; default 2) | page selector | User input |
+| Tolerance mode | 1, 2 or 3 sigma (68%, 95%, 99.7%; default 2) | page selector | User input; normal-curve labels, not false-alarm rates |
 | Marginal band | above 0.7 x sigma | `risk_kinematics.kinetics` | Convention, not sourced |
 | Rising-trend run | 6 consecutive rising days | `TREND_RUN_DAYS` | Run-chart convention, not yet sourced |
 | Momentum cut-off | +/- 0.01 acceleration | `presentation.MOMENTUM_DEADBAND` | Display threshold |
@@ -68,7 +68,7 @@ The page opens on the unit with the highest risk. Each card says in words what i
 
 ## Limitations
 
-- Prototype on synthetic data. It has not been validated against real incident data, gives no forecast and has no tested warning performance (sensitivity, false alerts).
+- Prototype on synthetic data. It has not been validated against real incident data and gives no forecast. Warning performance has been tested in simulation only: in a stable simulated ward at 2 sigma, an *Outside tolerance* alarm comes about every 80 days and any alert about every 32 days ([`docs/WEIGHTS.md`](docs/WEIGHTS.md)).
 - The harm weights, the 0.7 x sigma band and the 6-day run are conventions, not calibrated or sourced values.
 - A single daily total is sensitive to reporting volume: more reporting (not more harm) raises the score. Reporting culture is not modelled.
 - Mean and standard deviation come from the selected period itself, so a long surge inside a short period inflates the baseline.
