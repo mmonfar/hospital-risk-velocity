@@ -1,5 +1,11 @@
 # Hospital Risk Velocity (v2.1)
 
+[![Watch the 43-second teaser video](docs/media/teaser_poster.png)](docs/media/teaser.mp4)
+
+A 43-second teaser: how a daily harm score, a 7-day average and a limit line work, and how often the default alarm rings in a simulated calm ward.
+
+Video licence: CC BY-NC 4.0. Synthetic data. Not a medical device.
+
 Clinical risk dashboard: turns a log of incident reports into a daily harm score, and shows its velocity and acceleration, a control limit and a rising-trend check.
 **Status: Prototype · synthetic data · not a medical device.**
 
