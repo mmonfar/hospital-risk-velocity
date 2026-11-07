@@ -33,7 +33,7 @@ Dashboard `clinical_risk_dashboard`:
 
 ## Tests
 Command: `python -m pytest` (repo root).
-Last run (7 Nov 2026): 289 passed, about 32 s. The README still says 228 tests; it is out of date.
+Last run (7 Nov 2026): 289 passed, about 32 s.
 Folders: `tests/engine/` (harm, kinetics, calendar and trend) and `tests/app/` (presentation, view, sample data, app smoke, trend badge).
 
 Specs: see `docs/specs/`.
