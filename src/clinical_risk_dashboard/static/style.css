@@ -21,7 +21,7 @@
 
 /* Left nav */
 .rw-logo{font-weight:800;font-size:24px;letter-spacing:-.04em;color:var(--rw-ink);padding:20px 12px 0}
-.rw-logo i{color:var(--rw-teal);font-style:normal}
+.rw-logo i,.rw-mobrand i{display:inline-block;width:.25em;height:.25em;margin-left:.06em;background:var(--rw-teal)}
 .rw-logo small{display:block;font-size:14px;font-weight:600;color:var(--rw-slate);margin-top:2px;letter-spacing:0}
 .rw-navh{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rw-mute);padding:18px 12px 0}
 .rw-navitem{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-weight:600;color:var(--rw-teal);background:var(--rw-teal-tint);margin:0 4px}

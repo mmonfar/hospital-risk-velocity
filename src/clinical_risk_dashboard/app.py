@@ -29,6 +29,13 @@ def show(html: str) -> None:
     st.markdown(html, unsafe_allow_html=True)
 
 
+# mmonfar. wordmark: the square is an EMPTY element (brand-identity snippets/wordmark.html), never a "." character.
+WORDMARK_HTML = (
+    '<div class="rw"><div class="rw-logo">mmonfar<i aria-hidden="true"></i>'
+    "<small>Risk early warning</small></div></div>"
+)
+
+
 @st.cache_data
 def load_data():
     return generate_incidents()
@@ -99,7 +106,7 @@ def _nav_label(scope: str) -> str:
 
 
 with st.sidebar:
-    show(view.logo_html())
+    show(WORDMARK_HTML)
     show(view.nav_views_html())
     show(view.nav_units_title_html())
     st.radio(

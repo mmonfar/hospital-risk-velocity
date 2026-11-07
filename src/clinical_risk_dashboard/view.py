@@ -39,13 +39,6 @@ def sigma_text(z: float) -> str:
     return "n/a" if not math.isfinite(z) else f"{z:.2f}"
 
 
-def logo_html() -> str:
-    return (
-        '<div class="rw"><div class="rw-logo">mmonfar<i>.</i><small>Risk early warning</small>'
-        "</div></div>"
-    )
-
-
 def nav_views_html() -> str:
     return (
         '<div class="rw"><div class="rw-navh">Views</div>'
@@ -60,7 +53,7 @@ def nav_units_title_html() -> str:
 
 def header_html(scope: str) -> str:
     return (
-        '<div class="rw rw-head"><div class="rw-m rw-mobrand">mmonfar<i>.</i></div>'
+        '<div class="rw rw-head"><div class="rw-m rw-mobrand">mmonfar<i aria-hidden="true"></i></div>'
         '<div class="rw-eyebrow">Clinical risk · Risk velocity</div>'
         f'<h1 class="rw-h1">{escape(scope)}</h1>'
         '<div class="rw-quiet">Synthetic data. Not a medical device.</div></div>'
