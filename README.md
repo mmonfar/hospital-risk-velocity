@@ -35,7 +35,7 @@ cd hospital-risk-velocity
 python -m venv .venv
 .venv/bin/pip install -e ".[dev]"        # Windows: .venv\Scripts\pip install -e ".[dev]"
 .venv/bin/streamlit run app.py          # run from the repository root
-.venv/bin/pytest                          # optional: the test suite (289 tests)
+.venv/bin/pytest                          # optional: the test suite (301 tests)
 ```
 
 Everything installs from PyPI (numpy, pandas, streamlit). The theme and its font are bundled, so the app needs no other folder or external service.

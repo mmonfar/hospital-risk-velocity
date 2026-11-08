@@ -110,3 +110,8 @@ def test_short_period_still_renders() -> None:
     at.selectbox(key="period").set_value("30 days")
     run(at)
     assert "Count in the last 30 days" in page_html(at)
+
+
+def test_page_carries_the_mmonfar_wordmark(default_run: AppTest) -> None:
+    html = page_html(default_run)
+    assert 'mmonfar<i aria-hidden="true"></i>' in html
