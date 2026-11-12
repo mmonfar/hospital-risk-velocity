@@ -15,7 +15,6 @@ All data are synthetic. Everything is generated from fixed seeds. No patient or 
 - `study/protocol_addendum_2026-11-03.md`: the addendum on velocity, acceleration and jerk as alarms, written before those alarms were run. Its results are exploratory.
 - `Additional_file_1.zip`: CSV tables (censored shares, derived tables, post hoc simulation summaries, `summary.csv`).
 - `study/requirements-frozen.txt`: exact package versions.
-- `lit/`: logs of the brief literature searches of 3 November 2026 for the future-direction section (title-limited, not systematic).
 
 ## How to reproduce (run from this folder)
 1. Python 3.11 with the packages in `study/requirements-frozen.txt` (versions below). No other package is needed.

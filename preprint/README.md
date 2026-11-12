@@ -17,7 +17,6 @@ A frozen copy is in `study/engine_frozen/48c467f/`. The later trailing-average c
 - `study/tests/`: 62 tests (parity of the replica against the real engine, generator, charts, post hoc code).
 - `study/larger_run/`, `study/category_test/`, `study/severity_mix/`, `study/run_length_check/`: later checks. Each has a `RULES.md` written before the run.
 - `study/results/full/` and `study/results/extra/`: summaries, tables and figures. `study/results/full/tables/` holds the tables of the paper.
-- `lit/`: logs of the short literature searches of 3 November 2026.
 - `README_replication_package.md`: the original replication README (full detail, versions, timings).
 
 ## Not included
