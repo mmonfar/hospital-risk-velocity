@@ -1,0 +1,16 @@
+{
+ "post_hoc": true,
+ "lambda_new": 0.1,
+ "cusum_ref_sd_new": 0.25,
+ "scenarios": [
+  "S2",
+  "S15",
+  "SEV",
+  "REP",
+  "IC5"
+ ],
+ "gate": "PASS",
+ "wall_seconds": 281.0,
+ "numpy": "2.4.6",
+ "pandas": "3.0.5"
+}

@@ -1,0 +1,12 @@
+{
+ "post_hoc": true,
+ "extra_key": 20261102,
+ "seed": 20261013,
+ "n": 1000,
+ "k_tuned": 4.78504046522049,
+ "mean_score_rise_REP": 1.2668552139403337,
+ "S127_factor": 1.267,
+ "numpy": "2.4.6",
+ "pandas": "3.0.6",
+ "wall_seconds": 9.2
+}

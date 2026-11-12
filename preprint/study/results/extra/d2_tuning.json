@@ -1,0 +1,12 @@
+{
+ "k": 4.78504046522049,
+ "n_tune": 2000,
+ "arl0_tuning_set": 365.3694632621157,
+ "arl0_tuning_mcse": 8.340551336974922,
+ "arl0_test_set": 382.21334734629534,
+ "arl0_test_mcse": 8.761661185002998,
+ "alarm_events_test": 1903,
+ "fa365_test": 0.602,
+ "alarm_days_per_year_test": 1.2628333333333333,
+ "alarm_days_per_year_test_mcse": 0.017380523092189883
+}

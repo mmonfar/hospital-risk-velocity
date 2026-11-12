@@ -1,0 +1,7 @@
+finding,verdict,orderings,cells,held,flipped,not_separated,cannot_say,flips
+A,held,6,54,54,0,0,0,
+B,held,5,45,45,0,0,0,
+C,held,8,72,72,0,0,0,
+D,cannot say,3,27,23,0,4,0,
+E,changed,1,9,5,3,1,0,23 LOW; 23 PUB; 23 WD-PUB
+F,held,1,9,9,0,0,0,

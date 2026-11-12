@@ -1,0 +1,10 @@
+arm,s2,sev,rep_gap,rep_two_s,better_overall
+BASE,Held,Held,0.169,0.04,False
+LOW,Not separated,Held,0.048,0.04,False
+PUB,Not separated,Held,0.024,0.032,False
+HIGH,Held,Held,0.172,0.036,False
+NEAR,Held,Held,0.245,0.031,False
+CD,Not separated,Held,0.071,0.039,False
+WD-BASE,Held,Held,0.169,0.033,False
+WD-PUB,Held,Held,0.054,0.035,False
+WD-HIGH,Held,Held,0.168,0.038,False

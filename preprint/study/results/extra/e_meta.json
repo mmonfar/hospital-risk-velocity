@@ -1,0 +1,76 @@
+{
+ "exploratory": true,
+ "addendum": "study/protocol_addendum_2026-11-03.md",
+ "deriv_key": 20261103,
+ "seed": 20261013,
+ "n": {
+  "IC5": 2000,
+  "S15": 1000,
+  "S2": 1000,
+  "R60": 1000,
+  "SEV": 1000,
+  "REP": 1000,
+  "P14": 1000
+ },
+ "w": 7,
+ "thresholds_difference_stats": {
+  "squared": {
+   "V": 5.755102041139439,
+   "A": 1.2565597723843664,
+   "J": 0.36984589968771914,
+   "V-live": 7.714285736048254,
+   "A-live": 1.4518950488092515,
+   "J-live": 0.3789046234876944
+  },
+  "linear": {
+   "V": 1.2857142895916285,
+   "A": 0.2886297382881359,
+   "J": 0.08288213360227678,
+   "V-live": 1.6989795966834138,
+   "A-live": 0.3272594762300808,
+   "J-live": 0.08538109231806178
+  }
+ },
+ "numpy": "2.4.6",
+ "pandas": "3.0.6",
+ "python": "3.11.9",
+ "git_commit_at_run": "b99921104a72a7a74ed803a6fdaec38356c1c541",
+ "wall_seconds": 5.2,
+ "timing": [
+  {
+   "scenario": "IC5",
+   "n": 2000,
+   "seconds": 3.1
+  },
+  {
+   "scenario": "S15",
+   "n": 1000,
+   "seconds": 1.3
+  },
+  {
+   "scenario": "S2",
+   "n": 1000,
+   "seconds": 1.3
+  },
+  {
+   "scenario": "R60",
+   "n": 1000,
+   "seconds": 1.3
+  },
+  {
+   "scenario": "SEV",
+   "n": 1000,
+   "seconds": 1.4
+  },
+  {
+   "scenario": "REP",
+   "n": 1000,
+   "seconds": 1.4
+  },
+  {
+   "scenario": "P14",
+   "n": 1000,
+   "seconds": 1.3
+  }
+ ]
+}

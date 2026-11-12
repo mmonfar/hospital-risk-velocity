@@ -1,0 +1,25 @@
+{
+ "larger_run weights": {
+  "compared": 225000,
+  "missing": 0,
+  "differ": 0
+ },
+ "larger_run M7": {
+  "compared": 25000,
+  "missing": 0,
+  "differ": 0
+ },
+ "category test C4 C5": {
+  "compared": 50000,
+  "missing": 0,
+  "differ": 0
+ },
+ "pair run C7": {
+  "compared": 25000,
+  "missing": 0,
+  "differ": 0
+ },
+ "rows in BASE": 325000,
+ "rows compared": 325000,
+ "passed": true
+}
